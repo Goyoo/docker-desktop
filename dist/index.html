@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>My Angular2 App</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/terminal.css">
+  <!-- endinject -->
+  <link rel="stylesheet" href="/index.css">
+  
+  
+<script src="/resource/js/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resource/js/ace/src/mode-abc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resource/js/ace/src/theme-eclipse.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+
+<body style="width:100%;height:100%;overflow: hidden;">
+
+  <app>Loading...</app>
+  <!-- shims:js -->
+  <script src="/lib/es6-shim.min.js"></script>
+  <script src="/lib/Reflect.js"></script>
+  <script src="/lib/system.src.js"></script>
+  <script src="/lib/angular2-polyfills.js"></script>
+  <!-- endinject -->
+
+  <script>System.config({"defaultJSExtensions":true,"paths":{"bootstrap":"/bootstrap","*":"/node_modules/*"}})</script>
+
+  <!-- libs:js -->
+  <script src="/lib/Rx.min.js"></script>
+  <script src="/lib/angular2.min.js"></script>
+  <script src="/lib/router.js"></script>
+  <script src="/lib/http.min.js"></script>
+  <!-- endinject -->
+
+  <script>
+    System.import('bootstrap')
+      .catch(function (e) {
+        console.error(e,
+          'Report this error at https://github.com/mgechev/angular2-seed/issues');
+      });
+  </script>
+
+  <!-- inject:js -->
+  <script src="/js/jquery.js"></script>
+  <script src="/js/underscore.js"></script>
+  <script src="/js/sh.js"></script>
+  <script src="/js/socket.io.js"></script>
+  <!-- endinject -->
+
+</body>
+</html>

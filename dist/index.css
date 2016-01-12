@@ -1,0 +1,118 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video
+{
+   
+   -moz-user-select: none; /*火狐*/
+   -webkit-user-select: none;  /*webkit浏览器*/
+   -ms-user-select: none;   /*IE10*/
+   -khtml-user-select: none; /*早期浏览器*/
+   user-select: none;
+
+}
+
+body{
+    padding: 0px;
+    margin: 0px;
+}
+
+
+.bottomBar
+{
+    position: absolute;
+    height: 45px;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+}
+
+.bottomBar .backgroundDiv
+{
+    width: 100%;
+    position: absolute;
+    height: 40px;
+    background-color: #000;
+    
+    background:#4f86c2;
+    background:rgba(31,49,75,1);
+    bottom: 0px;
+    z-index: 11112;
+}
+
+
+.horizontal{
+    float: left;
+}
+
+.desktop-icon{
+    height: 80px;
+    width: 80px;
+/*    border:1px solid #000;*/
+}
+
+
+.task-icon-img{
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-size: 25px 22px;
+    margin-top: 8px;
+    margin-left: 10px;
+}
+
+
+.task-icon-file-browser{
+    background-image:url("../../resource/images/folder.png") ;
+}
+
+.task-icon-terminal{
+    background-image:url("../../resource/images/terminal.png") ;
+}
+
+.task-icon-photo-browser{
+    background-image:url("../../resource/images/image.png") ;
+}
+
+.task-icon-video-player{
+    background-image:url("../../resource/images/video.png") ;
+}
+
+.task-icon-editor{
+    background-image:url("../../resource/images/text.png") ;
+}
+
+
+.desktop-icon .icon-computer{
+    background-image: url("../../resource/images/computer.ico");
+}
+
+.desktop-icon .icon-user{
+    background-image: url("../resource/images/user.ico");
+}
+
+.desktop-icon .icon-trash{
+    background-image: url("../../resource/images/trash.ico");
+}
+
+.desktop-icon .icon-folder{
+    background-image: url("../../resource/images/folder.ico");
+}
+.desktop-icon .icon-terminal{
+    background-image: url("../../resource/images/terminal.png");
+}
+.desktop-icon .icon-textfile{
+    background-image: url("../../resource/images/text.png");
+}
+
+.desktop-icon .icon-file{
+    background-image: url("../../resource/images/file.png");
+}
+
+.desktop-icon .icon-image{
+    background-image: url("../../resource/images/image.png");
+}
+.desktop-icon .icon-video{
+    background-image: url("../../resource/images/video.png");
+}
+
+.desktop-icon .icon-zip{
+    background-image: url("../../resource/images/zip.png");
+}

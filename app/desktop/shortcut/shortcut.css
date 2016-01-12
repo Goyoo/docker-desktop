@@ -1,0 +1,56 @@
+
+.desktop-icon .icon-block{
+    margin: 5px 5px 5px 5px;
+/*    border:1px;*/
+    height: 70px;
+    width: 70px;
+    border:1px solid #000;
+    border-color: rgba(100, 140, 197, 0);
+}
+
+.desktop-icon .icon-block:hover{
+    background: none repeat scroll 0 0 rgba(160, 186, 220, 0.5);
+    border:1px solid #000;
+    transition: 0.2s linear;
+}
+
+.desktop-icon .icon-block:active{
+    background: none repeat scroll 0 0 rgba(160, 186, 220, 0.5);
+    border:1px solid #000;
+    transition: 0.2s linear;
+}
+
+.desktop-icon .icon-bg{
+    margin-left: 10px;
+    height: 50px;
+    width: 50px;
+    background-size: 50px 50px;
+    
+}
+
+.desktop-icon .icon-text-shadow{
+    font-size: 11px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 3px 0px 3px #000;
+}
+
+.desktop-icon .icon-text{
+    font-size: 11px;
+    text-align: center;
+    color: #000;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden;
+    margin-top: 3px;
+}
+
+.desktop-icon .icon-active:hover{
+    border:1px solid #ccc;
+    transition: 0.2s linear;
+}
+
+.desktop-icon .icon-active{
+    border:1px solid #ccc;
+    transition: 0.2s linear;
+}

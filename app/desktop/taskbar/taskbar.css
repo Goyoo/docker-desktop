@@ -1,0 +1,65 @@
+
+.task-start .start-button{
+    background-image:url("../../resource/images/start.png");
+    background-size: contain;
+    float: left;
+    width: 50px;
+    height: 40px;
+}
+
+.task-start .start-button:hover{
+    transition: 0.5s linear;
+    background-image:url("../../resource/images/start-hover.png");
+}
+
+.task-start .task-search{
+    float: left;
+    margin-left: 5px;
+/*    background: rgba(48,74,109,0.9);*/
+}
+
+.task-start .task-search input{
+    height: 28px;
+    width: 300px;
+    background: rgba(82,101,127,1);
+    border: 0px;
+    font-size: 14px;
+    padding-left: 5px;
+    margin: 5px 12px;
+} 
+
+.task-start .task-search input:focus{
+    background:none;
+    background: #fff;
+    outline:none;
+}
+
+.task-work{
+    float: left;
+    width: 50px;
+    height: 50px;
+}
+
+.task-work div{
+    width: 50px;
+    height: 50px;
+    background-image:url("../../resource/images/work.png");
+}
+
+.task-work:hover{
+    transition: 0.2s linear;
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.task-clock{
+    float:right;
+    color:#fff;
+    width:75px;
+    text-align: center;
+    font-size: 13px;
+    margin-right: 5px;
+}
+
+.task-clock div{
+    margin-top: 3px;
+}

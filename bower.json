@@ -1,0 +1,22 @@
+{
+  "name": "docker-desktop",
+  "version": "2.0.0-beta.0",
+  "homepage": "https://github.com/mgechev/angular2-seed",
+  "authors": [
+    "junjun16818 <junjun16818@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "underscore": "~1.8.3",
+    "sh.js": "CodeboxIDE/sh.js#~1.1.1",
+    "socket.io-client": "~1.3.7"
+  }
+}

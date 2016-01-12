@@ -1,0 +1,135 @@
+
+
+
+.panel{
+	position: absolute;
+	left:100px;
+	top:100px;
+	border:1px solid #ccc;
+	background-color:#fff;
+	border-radius:1px;
+}
+
+
+.panel .header{
+	width:100%;
+    height:30px;
+    text-align: left;
+	background-color:#eee;
+}
+
+.panel.focus .header  {
+	background-color:rgba(138,165,204,1);
+}
+
+.panel.focus  {
+	border-color:rgba(138,165,204,1);
+}
+
+.panel .header .icon{
+    height: 20px;   	
+    width: 20px;
+    float: left;
+    margin: 4px;
+    background-size: 20px 20px;
+    background-image: url("../../resource/images/computer.ico");
+}
+
+.panel .header .title{
+    padding-top: 5px;
+    float: left;
+}
+
+.panel-title-buttons {
+
+    height:40px;
+    float: right;
+	margin-top: 2px;
+	margin-right: 2px
+}
+
+
+.panel-btn {
+    float: right;
+    margin-right: 10px;
+    margin-top: 7px;
+    width:85px;
+    font-size:13px;
+	
+}
+
+.icon-min{
+    background-image:url(../../resource/images/icon/min2.png);
+    width:40px;
+    height:19px;
+    float: left;
+}
+.icon-max{
+    background-image:url(../../resource/images/icon/max2.png);
+    width:40px;
+    height:19px;
+    float: left;
+}
+.icon-close{
+    background-image:url(../../resource/images/icon/close2.png);
+    width:40px;
+    height:19px;
+    float: left;
+}
+
+.icon-min:hover{
+	background-image:url(../../resource/images/icon/min.png);
+}
+
+.icon-max:hover{
+	background-image:url(../../resource/images/icon/max.png);
+}
+
+.icon-close:hover{
+	background-image:url(../../resource/images/icon/close.png);
+}
+
+/*window*/
+.panel .design-resize-left, .design-resize-right  , .design-resize-bottom , .design-resize-left-bottom , .design-resize-right-bottom{
+	background:#b7bfca;
+	float: left;
+	position: absolute;
+	opacity: 0;                /* Firefox, Safari(WebKit), Opera,chrome/    filter: "alpha(opacity=60)"; /* IE 8 */
+	filter: alpha(opacity=0);   /* IE 4-7 */
+}
+.design-resize-left{
+	width:4px;
+	height: 100%;
+	cursor:e-resize; 
+	left:0px;
+	top:0px;
+}
+.design-resize-right{
+	width:4px;
+	height: 100%;
+	cursor:e-resize; 
+	right:0px;
+	top:0px;
+}
+.design-resize-bottom{
+	height:4px;
+	width:100%;
+	cursor:n-resize;
+	overflow:hidden; 
+	left:0px;
+	bottom:0px;
+}
+.design-resize-left-bottom{
+	height:4px;
+	width:4px;
+	cursor:sw-resize; 
+	left:0px;
+	bottom:0px;
+}
+.design-resize-right-bottom{
+	height:4px;
+	width:4px;
+	cursor:se-resize; 
+	right:0px;
+	bottom:0px;
+}
