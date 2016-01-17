@@ -19,7 +19,7 @@ import {HomeCmp} from '../home/home';
 
 @RouteConfig([
     { path: '/', component: HomeCmp, as: 'Home' },
-    { path: '/desktop/:id', component: DesktopAppCmp, as: 'Desktop' }
+    { path: '/desktop/:id/:ip/:port', component: DesktopAppCmp, as: 'Desktop' }
 ])
 
 export class AppCmp {}

@@ -15,8 +15,6 @@ declare var $
         <div class="fb-tool" style="">
             <div class="icon fb-icon-go fb-icon-back" (click)="back()"></div>
             <div class="icon fb-icon-go fb-icon-ahead" (click)="ahead()"></div>
-            <div class="icon fb-icon-triangle"></div>
-            <div class="icon fb-icon-arrow"></div>
             <div class="fb-src-input">
                 <div class="fb-icon-computer"></div>
                 <input type="text" class="fb-path-input" readonly="readonly" value="{{path}}" />

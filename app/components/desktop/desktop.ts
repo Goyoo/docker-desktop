@@ -4,6 +4,7 @@ import { DesktopCmp } from '../../desktop/desktop/desktop';
 import { TaskbarCmp } from '../../desktop/taskbar/taskbar';
 import { FileBrowserCmp } from '../../desktop/application/file-browser';
 import { PhotoBrowserCmp } from '../../desktop/application/photo-browser';
+import { WebBrowserCmp } from '../../desktop/application/web-browser';
 import { PdfCmp } from '../../desktop/application/pdf';
 import { TerminalCmp } from '../../desktop/application/terminal';
 import { EditorCmp } from '../../desktop/application/editor';
@@ -28,6 +29,7 @@ var postOptions = { headers:  new Headers({
         <desktop [(shortcuts)]="shortcuts" [(background_image)]="backgroundImage"></desktop>
         <taskbar [docks]="docks"></taskbar>
         <file-browser *ngFor="#item of fileBrowsers" [config]="item" ></file-browser>
+        <web-browser *ngFor="#item of webBrowsers" [config]="item" ></web-browser>
         <photo-browser *ngFor="#item of photoBrowsers" [config]="item" ></photo-browser>
         <terminal *ngFor="#item of terminals" [config]="item" ></terminal>
         <editor *ngFor="#item of editorList" [config]="item" ></editor>
@@ -36,7 +38,7 @@ var postOptions = { headers:  new Headers({
         <pdf *ngFor="#item of pdfs" [config]="item" ></pdf>
     `,
     styleUrls: ['./components/desktop/desktop.css'],
-    directives: [NgFor, DesktopCmp, TaskbarCmp, FileBrowserCmp, PhotoBrowserCmp, TerminalCmp,VideoPlayerCmp, MenuCmp, EditorCmp, ROUTER_DIRECTIVES,PdfCmp],
+    directives: [NgFor, DesktopCmp, TaskbarCmp, WebBrowserCmp, FileBrowserCmp, PhotoBrowserCmp, TerminalCmp,VideoPlayerCmp, MenuCmp, EditorCmp, ROUTER_DIRECTIVES,PdfCmp],
     viewProviders: [HTTP_PROVIDERS],
 })
 
@@ -45,6 +47,7 @@ export class DesktopAppCmp {
     backgroundImage = '/resource/images/img1.jpg'
     fileBrowsers = []
     photoBrowsers = []
+    webBrowsers = []
     pdfs = []
     videoPlayer = []
     menus = menuList
@@ -397,6 +400,13 @@ export class DesktopAppCmp {
             shadow: 'shadow',
             dblclick: ()=>{
                 this.createApp('terminal', this.terminals, { icon:'icon-terminal', title:'Terminal', container_id: this.params.id , icon_class: 'icon-terminal'})
+            }
+        }, {
+            icon: 'icon-ie-edge',
+            text: 'Internet',
+            shadow: 'shadow',
+            dblclick: ()=>{
+                this.createApp('web-browser', this.webBrowsers, { icon:'icon-ie-edge', src:'http://'+this.params.ip+':'+this.params.port, title:'Internet',icon_class: 'icon-ie-edge'})
             }
         }]
     }
