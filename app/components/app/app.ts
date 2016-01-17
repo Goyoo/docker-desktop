@@ -6,21 +6,20 @@ import {
 // import {HTTP_PROVIDERS} from 'angular2/http';
 
 import {DesktopAppCmp} from '../desktop/desktop';
-import {AboutCmp} from '../about/about';
-import {NameList} from '../../services/name_list';
+import {HomeCmp} from '../home/home';
 
 @Component({
   selector: 'app',
-  viewProviders: [NameList],
+//   viewBindings: [],
   templateUrl: './components/app/app.html',
   styleUrls: ['./components/app/app.css'],
-  encapsulation: ViewEncapsulation.None,
+//   encapsulation: ViewEncapsulation.None,
   directives: [ROUTER_DIRECTIVES]
 })
 
 @RouteConfig([
-    { path: '/', component: DesktopAppCmp, as: 'Desktop' },
-    { path: '/about', component: AboutCmp, as: 'About' }
+    { path: '/', component: HomeCmp, as: 'Home' },
+    { path: '/desktop/:id', component: DesktopAppCmp, as: 'Desktop' }
 ])
 
 export class AppCmp {}

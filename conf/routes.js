@@ -18,12 +18,68 @@ module.exports = function(app)
 		next()
 	})
 	
-	app.post('/upload', multipartMiddleware, function(req, res)
+    app.get('/', function(req, res){
+        res.sendFile(path.join(__dirname, '/../dist/', 'index.html'))
+    })
+    
+    app.get('/desktop/:container_id', function(req, res){
+        res.sendFile(path.join(__dirname, '/../dist/', 'index.html'))
+    })
+    
+    app.post('/container/create', function(req, res)
+    {
+        var image = 'dhub.yunpro.cn/junjun16818/'+req.body.image
+        var cmd = dockerCommand + ' run --label zone='+req.body.zone + ' -p 80 --name ' + req.body.name + ' -d -it ' + image + ' tail -f /etc/hosts'
+        
+        exec(cmd, function(err, stdout){
+            if( err )
+                return res.json(400, {error: err.toString()})
+            else
+                res.json(200, {})
+        })
+    })
+    
+    var ipMap = {
+        '192.168.100.102': '118.193.87.2',
+        '192.168.100.103': '118.193.87.3',
+        '192.168.100.104': '118.193.87.4',
+        '192.168.100.2': '101.251.243.38'
+    }
+    
+    app.get('/container/list', function(req, res)
+    {
+        request.get('http://101.251.243.38:8080/containers/json', function(err, data, body)
+        {
+            body = JSON.parse(body)
+            var list = []
+            
+            body.forEach(function(item){
+                if( !item.Labels || !item.Labels.zone )
+                    return 
+                
+                
+                item.Ports.forEach(function(rec){
+                    rec.IP = ipMap[rec.IP]
+                })
+                
+                list.push({
+                    id: item.Id,
+                    name: item.Names[0].replace('/localhost/', ''),
+                    status: item.Status,
+                    port: item.Ports?item.Ports[0]: null,
+                    image: item.Image
+                })
+            })
+            
+            res.json(200, list)
+        }) 
+    })
+    
+	app.post('/upload/:name', multipartMiddleware, function(req, res)
 	{
 		for( var key in req.files )
 		{
-			var cmd = dockerCommand + 'cp ' + req.files[key].path + ' ubuntu:/root/'+req.files[key].name
-			console.log(cmd)
+			var cmd = dockerCommand + 'cp ' + req.files[key].path + ' '+req.params.name +':/root/'+req.files[key].name
 			exec(cmd, function(err, stdout){
 				if( err )
 					return res.json(400, {error: err.toString()})
@@ -33,22 +89,15 @@ module.exports = function(app)
 		}
 	})
 	
-	app.get('/getFile', function(req, res)
+	app.get('/getFile/:name', function(req, res)
 	{		
 		res.writeHead(200, {
 			'Content-Type' : req.query.type
 		})
 		
-		return request.post({ url:'http://101.251.243.38:8080/containers/0579d58fc445/copy', json: { "Resource": req.query.url } }).pipe(tar.Parse()).pipe(res)
+		return request.post({ url:'http://101.251.243.38:8080/containers/'+req.params.name+'/copy', json: { "Resource": req.query.url } }).pipe(tar.Parse()).pipe(res)
 	})
     
-	app.get('/cat/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec ubuntu cat '+ req.query.path)
-		exec(dockerCommand + 'exec ubuntu cat '+ req.query.path, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
     
 	app.get('/unzip/:name', function(req, res)
 	{
@@ -56,64 +105,19 @@ module.exports = function(app)
         paths.pop()
         paths = paths.join('/')+'/'
         
-        console.log(dockerCommand + 'exec ubuntu unzip -o -d ' + paths + ' ' + req.query.path)
-		exec(dockerCommand + 'exec ubuntu unzip -o -d ' + paths + ' ' + req.query.path, function(err, data){
+        console.log(dockerCommand + 'exec '+req.params.name+' unzip -o -d ' + paths + ' ' + req.query.path)
+		exec(dockerCommand + 'exec '+req.params.name+' unzip -o -d ' + paths + ' ' + req.query.path, function(err, data){
 			res.json(200, { body: data})
 		})
 	})
     
-	app.post('/rename/:name', function(req, res)
-	{
-        var paths = req.query.path.split('/')
-        paths.pop()
-        paths = paths.join('/')+'/'+req.query.name
-        
-        console.log(dockerCommand + 'exec ubuntu mv ' + req.query.path + ' ' + paths)
-		exec(dockerCommand + 'exec ubuntu mv ' + req.query.path + ' ' + paths, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
-    
-	app.post('/delete/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec ubuntu rm -r ' + req.query.path)
-		exec(dockerCommand + 'exec ubuntu rm -r ' + req.query.path, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
-    
-	app.post('/touch/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec ubuntu touch ' + req.query.path)
-		exec(dockerCommand + 'exec ubuntu touch ' + req.query.path, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
-    
-	app.post('/cp/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec ubuntu cp -r ' + req.query.source + ' ' + req.query.to)
-		exec(dockerCommand + 'exec ubuntu cp -r ' + req.query.source + ' ' + req.query.to, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
-    
-	app.post('/mkdir/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec ubuntu mkdir ' + req.query.path)
-		exec(dockerCommand + 'exec ubuntu mkdir ' + req.query.path, function(err, data){
-            if( err )
-                console.log(err)
-			res.json(200, { body: data})
-		})
-	})
     
 	app.post('/write/:name', function(req, res)
 	{
         var filename = './tmp/file-'+parseInt(Math.random()*100+'')
         fs.writeFileSync(filename, req.body.body)
         
-        var cmd = dockerCommand + 'cp ' + filename + ' ubuntu:'+req.query.path
+        var cmd = dockerCommand + 'cp ' + filename + ' '+req.params.name+':'+req.query.path
 		
         console.log(cmd)
         exec(cmd, function(err, stdout){
@@ -124,31 +128,86 @@ module.exports = function(app)
         })
 	})
     
-	app.get('/ls/:name', function(req, res)
+	// app.get('/cat/:name', function(req, res)
+	// {
+    //     console.log(dockerCommand + 'exec ubuntu cat '+ req.query.path)
+	// 	exec(dockerCommand + 'exec ubuntu cat '+ req.query.path, function(err, data){
+	// 		res.json(200, { body: data})
+	// 	})
+	// })
+	// app.post('/rename/:name', function(req, res)
+	// {
+    //     var paths = req.query.path.split('/')
+    //     paths.pop()
+    //     paths = paths.join('/')+'/'+req.query.name
+        
+    //     console.log(dockerCommand + 'exec ubuntu mv ' + req.query.path + ' ' + paths)
+	// 	exec(dockerCommand + 'exec ubuntu mv ' + req.query.path + ' ' + paths, function(err, data){
+	// 		res.json(200, { body: data})
+	// 	})
+	// })
+    
+	app.post('/delete/:name', function(req, res)
 	{
-		exec(dockerCommand + 'exec ubuntu bash -c "file '+ req.query.path + '/* --mime" ', function(err, data)
-		{
-			var list = []
-			
-			data.split('\n').forEach(function(item, index)
-			{
-				item = item.replace(/ /g, '')
-				
-				if( !item )
-					return
-				
-				var str = item.split(':')
-				
-				if( str[0].split('/').pop() === '*' )
-					return 
-				
-				list.push({
-					type: str[1].split(';')[0],
-					name: str[0].split('/').pop(),
-					path: str[0]
-				})
-			})
-			res.json(200, list)
+        console.log(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path)
+		exec(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path, function(err, data){
+			res.json(200, { body: data})
 		})
 	})
+    
+	// app.post('/touch/:name', function(req, res)
+	// {
+    //     console.log(dockerCommand + 'exec ubuntu touch ' + req.query.path)
+	// 	exec(dockerCommand + 'exec ubuntu touch ' + req.query.path, function(err, data){
+	// 		res.json(200, { body: data})
+	// 	})
+	// })
+    
+	// app.post('/cp/:name', function(req, res)
+	// {
+    //     console.log(dockerCommand + 'exec ubuntu cp -r ' + req.query.source + ' ' + req.query.to)
+	// 	exec(dockerCommand + 'exec ubuntu cp -r ' + req.query.source + ' ' + req.query.to, function(err, data){
+	// 		res.json(200, { body: data})
+	// 	})
+	// })
+    
+	// app.post('/mkdir/:name', function(req, res)
+	// {
+    //     console.log(dockerCommand + 'exec ubuntu mkdir ' + req.query.path)
+	// 	exec(dockerCommand + 'exec ubuntu mkdir ' + req.query.path, function(err, data){
+    //         if( err )
+    //             console.log(err)
+	// 		res.json(200, { body: data})
+	// 	})
+	// })
+	// app.get('/ls/:name', function(req, res)
+	// {
+	// 	exec(dockerCommand + 'exec ubuntu bash -c "file '+ req.query.path + '/* --mime" ', function(err, data)
+	// 	{
+	// 		var list = []
+			
+	// 		data.split('\n').forEach(function(item, index)
+	// 		{
+	// 			item = item.replace(/ /g, '')
+				
+	// 			if( !item )
+	// 				return
+				
+	// 			var str = item.split(':')
+				
+	// 			if( str[0].split('/').pop() === '*' )
+	// 				return 
+				
+	// 			list.push({
+	// 				type: str[1].split(';')[0],
+	// 				name: str[0].split('/').pop(),
+	// 				path: str[0]
+	// 			})
+	// 		})
+	// 		res.json(200, list)
+	// 	})
+	// })
 }
+// request.get('http://www.baidu.com/', function(err, data, d){
+//     console.log(d)
+// })

@@ -49,14 +49,14 @@ export const NPM_DEPENDENCIES = [
   { src: 'angular2/bundles/angular2.min.js', inject: 'libs', dest: LIB_DEST },
   { src: 'angular2/bundles/router.js', inject: 'libs', dest: LIB_DEST }, // use router.min.js with alpha47
   { src: 'angular2/bundles/http.min.js', inject: 'libs', dest: LIB_DEST },
-
-  { src: 'bootstrap/dist/css/bootstrap.min.css', inject: true, dest: CSS_DEST },
+  { src: 'bootstrap/dist/css/bootstrap.min.css', inject: true, dest: CSS_DEST }
 ];
 
 // Declare local files that needs to be injected
 export const APP_ASSETS = [
   { src: `${ASSETS_SRC}/main.css`, inject: true, dest: CSS_DEST },
   { src: `bower_components/jquery/dist/jquery.js`, inject: true, dest: JS_DEST },
+  { src: 'node_modules/bootstrap/dist/js/bootstrap.js', inject: true, dest: LIB_DEST },
   { src: `bower_components/underscore/underscore.js`, inject: true, dest: JS_DEST },
   { src: `bower_components/sh.js/build/sh.js`, inject: true, dest: JS_DEST },
   { src: `bower_components/socket.io-client/socket.io.js`, inject: true, dest: JS_DEST },

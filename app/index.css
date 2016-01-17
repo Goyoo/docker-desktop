@@ -8,6 +8,11 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
    user-select: none;
 
 }
+input:focus{
+    background:none;
+    background: #fff;
+    outline:none;
+}
 
 body{
     padding: 0px;
@@ -67,6 +72,10 @@ body{
     background-image:url("../../resource/images/terminal.png") ;
 }
 
+.task-icon-pdf{
+    background-image:url("../../resource/images/pdf.png") ;
+}
+
 .task-icon-photo-browser{
     background-image:url("../../resource/images/image.png") ;
 }
@@ -78,41 +87,51 @@ body{
 .task-icon-editor{
     background-image:url("../../resource/images/text.png") ;
 }
+.task-icon-web-browser{
+    background-image:url("../../resource/images/ie10.png") ;
+}
 
 
-.desktop-icon .icon-computer{
+ .icon-computer{
     background-image: url("../../resource/images/computer.ico");
 }
 
-.desktop-icon .icon-user{
+.icon-user{
     background-image: url("../resource/images/user.ico");
 }
 
-.desktop-icon .icon-trash{
+.icon-trash{
     background-image: url("../../resource/images/trash.ico");
 }
 
-.desktop-icon .icon-folder{
+.icon-folder{
     background-image: url("../../resource/images/folder.ico");
 }
-.desktop-icon .icon-terminal{
+.icon-terminal{
     background-image: url("../../resource/images/terminal.png");
 }
-.desktop-icon .icon-textfile{
+.icon-textfile{
     background-image: url("../../resource/images/text.png");
 }
 
-.desktop-icon .icon-file{
+.icon-file{
     background-image: url("../../resource/images/file.png");
 }
 
-.desktop-icon .icon-image{
+.icon-image{
     background-image: url("../../resource/images/image.png");
 }
-.desktop-icon .icon-video{
+.icon-video{
     background-image: url("../../resource/images/video.png");
 }
 
-.desktop-icon .icon-zip{
+.icon-zip{
     background-image: url("../../resource/images/zip.png");
+}
+.icon-pdf{
+    background-image: url("../../resource/images/pdf.png");
+}
+
+.icon-ie-edge{
+    background-image: url("../../resource/images/ie10.png");
 }

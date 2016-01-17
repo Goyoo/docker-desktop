@@ -5,11 +5,12 @@ import { dockAppList } from '../../desktop/taskbar/dock';
 
 declare var $
 
-var zindex = 100
+window['ZINDEX'] = window['ZINDEX'] || 100
+
 export var windowTemplate = `
     <div id="{{config && config._id}}" (mousedown)="focus(config && config._id)" [ngStyle]="{'width': width+'px', 'height': height+'px', 'z-index': zindex}"  class="panel desktop-window"  > 
         <div class="header" style="position: absolute;"> 
-            <div class="icon"></div> 
+            <div class="icon {{config.icon}}"></div> 
             <div class="title">{{config.title}}</div> 
             <div class="panel-title-buttons"> 
                 <div class="icon-min" (click)="min()"> </div> 
@@ -31,7 +32,6 @@ export var windowTemplate = `
 export class WindowCmp{
     config:any;
     element: any;
-    zindex = 100;
 	width = 900
 	height = 300
     constructor(){
@@ -61,11 +61,12 @@ export class WindowCmp{
     
     setTitle(title){
         $(this.element).find('.title').html(title)
+        // this.config.title = title
     }
     
     focus(id){
+        $(this.element).find('.panel').css('z-index', window['ZINDEX']++);
         $('.panel').removeClass('focus');
-        $(this.element).find('.panel').css('z-index', zindex++);
         $(this.element).find('.panel').addClass('focus');
     }
     

@@ -40,7 +40,7 @@ export class ShortcutCmp
         $('.icon-active').removeClass('icon-active')
 		$(this.element).find('.icon-block').addClass('icon-active')
     }
-    
+     
     keydown(event){
         if(event.keyCode==27){
             this._rename = false

@@ -24,7 +24,7 @@ export class VideoPlayerCmp extends WindowCmp {
     shortcuts = [] 
     element: any
     @Input() config
-    width = 744
+    width = 744 
 	height = 448
 	constructor(@Inject(ElementRef) elementRef: ElementRef){
        

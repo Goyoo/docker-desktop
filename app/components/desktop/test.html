@@ -1,0 +1,415 @@
+// import { Component, Input } from 'angular2/core';
+// import { NgStyle, NgFor } from 'angular2/common';
+// import { DesktopCmp } from '../../desktop/desktop/desktop';
+// import { TaskbarCmp } from '../../desktop/taskbar/taskbar';
+// import { FileBrowserCmp } from '../../desktop/application/file-browser';
+// import { PhotoBrowserCmp } from '../../desktop/application/photo-browser';
+// import { EditorCmp } from '../../desktop/application/editor';
+// import { VideoPlayerCmp } from '../../desktop/application/video-player';
+// import { dockAppList } from '../../desktop/taskbar/dock';
+// import { MenuCmp , menuList} from '../../desktop/menu/menu';
+// import { bootstrap }    from 'angular2/platform/browser'
+// import { Injector, provide } from 'angular2/core';
+// import { Http, HTTP_PROVIDERS, Headers} from 'angular2/http';
+// import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_BINDINGS, RouteParams} from 'angular2/router';
+
+// declare var $, _
+// var copy_path = ''
+//  declare var Terminal , io
+// var postOptions = { headers:  new Headers({
+// 	'Content-Type': 'application/json'
+// })}
+
+// var term_id
+// var callback
+// var socket
+
+// function initSocket(container_id)
+// {
+//     var termid = container_id +'§'+ parseInt(Math.random()*10000+'')
+//     socket = io.connect("http://"+window.location.host)
+    
+//     socket.emit('createTerminal', termid, (_term_id)=>
+//     {
+//         var str = ''
+//         term_id = _term_id
+//         socket.on('data'+term_id, (data)=>{
+//             str += data.toString().replace(/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]/g, '')
+            
+//             if( /[\d\w]+:\/#$/.test(str.trim())){
+//                 callback && callback(str)
+//                 str = ''
+//             }
+//         })
+//     })
+// }
+
+// export function exec(cmd, done){
+//     callback = (data)=>{
+//         callback = null
+//         done(data)
+//     }
+    
+//     socket.emit('data'+term_id, cmd + ' \n')
+// }
+
+// var fileBrowsers = [], photoBrowsers = [], videoPlayer = [], editorList
+
+// @Component({
+//     selector: 'file-broswer-app',
+//     template: `
+//         <file-browser *ngFor="#item of fileBrowsers" [config]="item" ></file-browser>
+//         <photo-browser *ngFor="#item of photoBrowsers" [config]="item" ></photo-browser>
+//         <editor *ngFor="#item of editorList" [config]="item" ></editor>
+//         <video-player *ngFor="#item of videoPlayer" [config]="item" ></video-player>
+//         <menu style="position:absolute" *ngFor="#item of menus" [config]="item" ></menu>
+//     `,
+//     styleUrls: ['./components/desktop/desktop.css'],
+//     directives: [NgFor, DesktopCmp, TaskbarCmp, FileBrowserCmp, PhotoBrowserCmp,VideoPlayerCmp, MenuCmp, EditorCmp, ROUTER_DIRECTIVES],
+//     viewProviders: [HTTP_PROVIDERS],
+// })
+
+// export class FileBrowserApp {
+//     fileBrowsers = fileBrowsers
+//     photoBrowsers = photoBrowsers
+//     videoPlayer = videoPlayer
+//     menus = menuList
+//     editorList = editorList
+//     idIndex = 0
+//     type = 'file-browser'
+//     @Input() config
+//     params:any = {}
+//     socket: any
+//     term_id: any
+//     callback: any
+    
+//     create(type, list, config)
+//     {
+//         var id = type + '-' + this.idIndex ++ 
+        
+//         list.push(_.extend(config,{
+//             _id: id,
+//             type: type,
+//             componentList: list
+//         }))
+        
+//         var isFind = false 
+        
+//         dockAppList.forEach((item, index)=>{
+//             if( item._id === type )
+//                 isFind = true
+//         })
+//         console.log(list.length)
+//         if( !isFind )
+//             dockAppList.push({_id: type, items: list, icon: 'task-icon-' + type })
+//     }
+    
+//     parseFileList(str){
+//         var list = str.split('\n')
+//         var list2 , list3 = []
+//         list.forEach(function(item){
+//             if( item.indexOf('/') === 0 )
+//                 list2 = list2 || []
+                
+//             if(list2)
+//                 list2.push(item)
+//         })
+        
+//         list2.pop()
+        
+//         list2.forEach(function(item, index)
+//         {
+//             item = item.replace(/ /g, '')
+//             if( !item )
+//                 return
+            
+//             var str = item.split(':')
+            
+//             if( str[0].split('/').pop() === '*' )
+//                 return 
+            
+//             list3.push({
+//                 type: str[1].split(';')[0],
+//                 name: str[0].split('/').pop(),
+//                 path: str[0]
+//             })
+//         })
+        
+//         return list3
+//     }
+    
+//     iconMap = {
+//         'inode/directory': 'icon-folder',
+//         'text/plain': 'icon-textfile',
+//         'image/png': 'icon-image',
+//         'image/jpeg': 'icon-image',
+//         'application/ogg': 'icon-video',
+//         'application/zip': 'icon-zip',
+//         'inode/x-empty': 'icon-textfile'
+//     }
+    
+//     lsByPath(path){
+//         this.ls(path, (list)=>
+//         {
+//             list.forEach( (item)=>
+//             {
+//                 item.text = item.name
+//                 item.icon = this.iconMap[item.type]
+                
+//                 item.rename = ((name)=>{
+//                     this.mv(item.path, item.path.split('/').splice(0, item.path.split('/').length-1).join('/')+ '/'+name, ()=>{
+//                         this.config['object'].refresh()
+//                     })
+//                 })
+                
+//                 item.menu = [{
+//                     text: "打开",
+//                     handler: (event)=>{
+//                         item.dblclick()       
+//                     }
+//                 }, {
+//                     text: "复制",
+//                     handler: (event)=>{
+//                         copy_path = item.path
+//                     }
+//                 }, {
+//                     text: "重命名",
+//                     handler: (event)=>{
+//                         item.obj.rename()
+//                     }
+//                 }, {
+//                     text: "删除",
+//                     handler: (event)=>{
+//                         if( !confirm("确认删除？") )
+//                             return 
+                        
+//                         this.rm(item.path, ()=>{
+//                             this.config['object'].refresh()
+//                         })
+//                     }
+//                 }]
+                
+//                 if( !item.icon )
+//                     item.icon = 'icon-file'
+                
+//                 if( item.type === 'inode/directory' ){
+//                     item.dblclick = ()=>{
+//                         this.config['object']['setPath']((path === '/'?'':path) + '/' + item.name)
+//                     }
+//                 }
+                
+//                 if( /image\/*/.test(item.type) ){
+//                     item.dblclick = ()=>{
+//                         this.create('photo-browser', this.photoBrowsers, { title: item.name, url: '/getFile/'+this.config.container_id+'?url='+item.path+'&type='+item.type })
+//                     }
+//                 }
+                
+//                 if( item.type === 'application/ogg' ){
+//                     item.dblclick = ()=>{
+//                         this.create('video-player', this.videoPlayer, { url: 'http://127.0.0.1:8088/getFile/'+this.config.container_id+'?url='+item.path+'&type=video/ogg' })
+//                     }
+//                 }
+                
+//                 if( item.type === 'application/zip' ){
+//                     item.menu[0].text='解压'
+//                     item.dblclick = ()=>{
+//                         this.http.get('/unzip/'+this.config.container_id+'?path='+item.path).subscribe(res => {
+//                             this.config['object'].refresh()
+//                         })
+//                     }
+//                 }
+                
+//                 if( item.type === 'text/plain' || item.type === 'inode/x-empty' ){
+//                     item.dblclick = ()=>{
+//                         this.cat(item.path, (data)=>{
+//                             this.create('editor', this.editorList, { 
+//                                 context: data,//res.json().body, 
+//                                 title: item.name,
+//                                 onSave: (str)=>{
+//                                     if( !/\\n$/.test(str))
+//                                         str+='\n'
+//                                     this.http.post('/write/'+this.config.container_id+'?path='+item.path, JSON.stringify({body: str}), postOptions).subscribe(res => {
+//                                         if( res.status !== 200 )
+//                                             alert(res.json().error)
+//                                     })
+//                                 }
+//                             })
+//                         })
+//                     }
+//                 }
+//             })
+            
+//             this.config.fileList = list
+//         })
+//     }
+    
+//     ls(name, done){
+//         if( name === '/' )
+//             name = ''
+            
+//         exec('file ' + name + '/* --mime', (data)=>{
+//             done(this.parseFileList(data))
+//         })
+//     }
+    
+//     cat(path, done){
+//         exec('cat '+path, (data)=>{
+//             data = data.split('\n')
+//             done(data.splice(1, data.length-2).join('\n'))
+//         })
+//     }
+    
+//     rm(path, done){
+//         exec('rm -r '+path, (data)=>{
+//             done()
+//         })
+//     }
+    
+//     mv(path, newPath, done){
+//         exec('mv '+path+' '+ newPath, (data)=>{
+//             done()
+//         })
+//     }
+    
+//     touch(path, done){
+//         exec('touch '+path, (data)=>{
+//             done()
+//         })
+//     }
+    
+//     mkdir(path, done){
+//         exec('mkdir '+path, (data)=>{
+//             done()
+//         })
+//     }
+    
+//     constructor(public http?: Http, routerParams?: RouteParams){
+//         setTimeout(()=> {
+            
+//             if( !socket )
+//                 initSocket(this.config.container_id)
+            
+//             this.config = _.extend(this.config,
+//             {
+//                 onSetPath: (path)=>{
+//                     this.lsByPath(path)
+//                 },
+//                 fileList: []
+//             })
+//             console.log(123123123)
+//             this.create(this.type, this.fileBrowsers,this.config)
+//         }, 100);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Component } from 'angular2/core';
+// import { NgStyle, NgFor } from 'angular2/common';
+// import { DesktopCmp } from '../../desktop/desktop/desktop';
+// import { TaskbarCmp } from '../../desktop/taskbar/taskbar';
+// import { Http, HTTP_PROVIDERS, Headers} from 'angular2/http';
+// import { dockAppList } from '../../desktop/taskbar/dock';
+// import { TerminalCmp } from '../../desktop/application/terminal';
+// import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_BINDINGS, RouteParams } from 'angular2/router';
+// import { FileBrowserApp } from './file-browser'
+
+// declare var $, _
+// var copy_path = ''
+//  declare var Terminal , io
+// var postOptions = { headers:  new Headers({
+// 	'Content-Type': 'application/json'
+// })}
+
+
+
+// @Component({
+//     selector: 'desktop-app',
+//     template: `
+//         <desktop [(shortcuts)]="shortcuts" [(background_image)]="backgroundImage"></desktop>
+//         <taskbar [docks]="docks"></taskbar>
+//         <file-broswer-app *ngFor="#item of fileBrowserApps" [config]="item"> </file-broswer-app>
+//         <terminal *ngFor="#item of terminals" [config]="item" ></terminal>
+//     `,
+//     styleUrls: ['./components/desktop/desktop.css'],
+//     directives: [NgFor, DesktopCmp, TaskbarCmp, ROUTER_DIRECTIVES, FileBrowserApp, TerminalCmp],
+//     viewProviders: [HTTP_PROVIDERS],
+// })
+
+// export class DesktopAppCmp {
+//     shortcuts = []
+//     docks = []
+//     backgroundImage = '/resource/images/img1.jpg'
+//     params : any = {}
+//     fileBrowserApps = []
+//     terminals = []
+//     idIndex = 100
+//     create(type, list, config)
+//     {
+//         var id = type + '-' + this.idIndex ++ 
+        
+//         list.push(_.extend(config,{
+//             _id: id,
+//             type: type,
+//             componentList: list
+//         }))
+        
+//         var isFind = false 
+        
+//         dockAppList.forEach((item, index)=>{
+//             if( item._id === type )
+//                 isFind = true
+//         })
+        
+//         if( !isFind )
+//             dockAppList.push({_id: type, items: list, icon: 'task-icon-' + type })
+//     }
+    
+//     constructor(public http?: Http, routerParams?: RouteParams){
+//         this.params = routerParams.params
+        
+//         var index = 1
+//         this.shortcuts = [{
+//             icon: 'icon-computer',
+//             text: '这台电脑',
+//             shadow: 'shadow',
+//             dblclick: ()=>{
+//                 console.log(123)
+//                 this.fileBrowserApps.push({
+//                     title: '这台电脑',
+//                     path: '/',
+//                     container_id: this.params.id
+//                 })
+//             }
+//         }, {
+//             icon: 'icon-user', 
+//             text: '我的文档',
+//             shadow: 'shadow',
+//             dblclick:()=>{
+//                 this.fileBrowserApps.push({
+//                     title: '我的文档',
+//                     path: '/root',
+//                     container_id: this.params.id
+//                 })
+//             }
+//         }, {
+//             icon: 'icon-terminal',
+//             text: 'Terminal',
+//             shadow: 'shadow',
+//             dblclick: ()=>{
+//                 this.create('terminal', this.terminals, { container_id: this.params.id , icon_class: 'icon-terminal'})
+//             }
+//         }]
+//     }
+// }

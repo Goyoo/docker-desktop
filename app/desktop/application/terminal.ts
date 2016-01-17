@@ -24,7 +24,7 @@ export class TerminalCmp extends WindowCmp {
     width = 630
 	height = 400
 	constructor(@Inject(ElementRef) elementRef: ElementRef){
-       
+        
         super()
         this.element = elementRef.nativeElement
         
@@ -36,15 +36,15 @@ export class TerminalCmp extends WindowCmp {
 	}
 	
 	setTerminal(){
-		var term = new Terminal()
-		// var path = document.location.toString().split('/')
+		var term = new Terminal() 
 		var socket = io.connect("http://"+window.location.host)
-		var term_id = 'ubuntu-cuqsx'+'§'+ this.config._id
+		var term_id = this.config.container_id+'§'+ this.config._id
 		socket.emit('createTerminal', term_id, (term_id)=>
 		{
 			term.on('data', function(data){
 				socket.emit('data'+term_id, data)
 			})
+            
 			term.open($(this.element).find('.terminal-window')[0])
 			
 			socket.on('data'+term_id, function(data){ 

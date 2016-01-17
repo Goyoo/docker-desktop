@@ -1,5 +1,6 @@
 import {Component, ElementRef, Inject, Input} from 'angular2/core';
 import {NgStyle} from 'angular2/common';
+import { WindowCmp, windowTemplate } from '../panel/window';
 
 declare var $
 
@@ -41,6 +42,7 @@ class DockAppCmp {
             $('#app-icon-block-'+id).show()
         }, 500);
     }
+    
     mouseout(id){
         clearTimeout(this.showTimeout)
         this.hideTimeout = setTimeout(()=>{
@@ -48,6 +50,7 @@ class DockAppCmp {
             
         }, 500)
     }
+    
     item_mouseenter(id){
         $('.desktop-window').each((index, item)=>{
             if( $(item).css('display') == 'block' ){
@@ -58,6 +61,7 @@ class DockAppCmp {
         
         $('#'+id).show()
     }
+    
     item_mouseout(id){
         $('#'+id).hide()
         this.beforeShowItems.forEach((item)=>{
@@ -71,6 +75,9 @@ class DockAppCmp {
     clickItem(id, did){
         $('#app-icon-block-'+did).hide()
         this.beforeShowItems.push($('#'+id)[0])
+        $('#'+id).css('z-index', window['ZINDEX']++);
+        $('.panel').removeClass('focus');
+        $('#'+id).addClass('focus');
     }
 }
 

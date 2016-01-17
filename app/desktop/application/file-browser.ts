@@ -108,7 +108,7 @@ export class FileBrowserCmp extends WindowCmp {
     
     uploadFile(file, status) {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload');
+        xhr.open('POST', this.config.uploadUrl);
         xhr.onload = ()=> {
             this.refresh()
         };

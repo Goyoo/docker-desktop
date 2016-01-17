@@ -4,6 +4,7 @@ import { DesktopCmp } from '../../desktop/desktop/desktop';
 import { TaskbarCmp } from '../../desktop/taskbar/taskbar';
 import { FileBrowserCmp } from '../../desktop/application/file-browser';
 import { PhotoBrowserCmp } from '../../desktop/application/photo-browser';
+import { PdfCmp } from '../../desktop/application/pdf';
 import { TerminalCmp } from '../../desktop/application/terminal';
 import { EditorCmp } from '../../desktop/application/editor';
 import { VideoPlayerCmp } from '../../desktop/application/video-player';
@@ -12,6 +13,7 @@ import { MenuCmp , menuList} from '../../desktop/menu/menu';
 import { bootstrap }    from 'angular2/platform/browser'
 import { Injector, provide } from 'angular2/core';
 import { Http, HTTP_PROVIDERS, Headers} from 'angular2/http';
+import {RouteConfig, ROUTER_DIRECTIVES, ROUTER_BINDINGS, RouteParams} from 'angular2/router';
 
 declare var $, _
 var copy_path = ''
@@ -19,7 +21,6 @@ var copy_path = ''
 var postOptions = { headers:  new Headers({
 	'Content-Type': 'application/json'
 })}
-
 
 @Component({
     selector: 'desktop-app',
@@ -32,9 +33,10 @@ var postOptions = { headers:  new Headers({
         <editor *ngFor="#item of editorList" [config]="item" ></editor>
         <video-player *ngFor="#item of videoPlayer" [config]="item" ></video-player>
         <menu style="position:absolute" *ngFor="#item of menus" [config]="item" ></menu>
+        <pdf *ngFor="#item of pdfs" [config]="item" ></pdf>
     `,
     styleUrls: ['./components/desktop/desktop.css'],
-    directives: [NgFor, DesktopCmp, TaskbarCmp, FileBrowserCmp, PhotoBrowserCmp, TerminalCmp,VideoPlayerCmp, MenuCmp, EditorCmp],
+    directives: [NgFor, DesktopCmp, TaskbarCmp, FileBrowserCmp, PhotoBrowserCmp, TerminalCmp,VideoPlayerCmp, MenuCmp, EditorCmp, ROUTER_DIRECTIVES,PdfCmp],
     viewProviders: [HTTP_PROVIDERS],
 })
 
@@ -43,6 +45,7 @@ export class DesktopAppCmp {
     backgroundImage = '/resource/images/img1.jpg'
     fileBrowsers = []
     photoBrowsers = []
+    pdfs = []
     videoPlayer = []
     menus = menuList
     terminals = []
@@ -69,14 +72,105 @@ export class DesktopAppCmp {
             dockAppList.push({_id: type, items: list, icon: 'task-icon-'+type })
     }
     
-    lsByPath(path, done){
-        
-        console.log(path)
-        this.ls(path, function(data){
-            console.log(data)
-            done(null, data)
+    lsByPath(path, config){
+        this.ls(path, (list)=>{
+            list.forEach( (item)=>
+            {
+                item.text = item.name
+                item.icon = this.iconMap[item.type]
+                
+                item.rename = ((name)=>{
+                    this.mv(item.path, item.path.split('/').splice(0, item.path.split('/').length-1).join('/')+ '/'+name, function(){
+                        config['object'].refresh()
+                    })
+                })
+                
+                item.menu = [{
+                    text: "打开",
+                    handler: function(event){
+                        item.dblclick()       
+                    }
+                }, {
+                    text: "复制",
+                    handler: function(event){
+                        copy_path = item.path
+                    }
+                }, {
+                    text: "重命名",
+                    handler: function(event){
+                        item.obj.rename()
+                    }
+                }, {
+                    text: "删除",
+                    handler: (event)=>{
+                        if( !confirm("确认删除？") )
+                            return 
+                        
+                        this.rm(item.path, function(){
+                            config['object'].refresh()
+                        })
+                    }
+                }]
+                
+                if( !item.icon )
+                    item.icon = 'icon-file'
+                
+                if( item.type === 'inode/directory' ){
+                    item.dblclick = ()=>{
+                        config['object']['setPath']((path === '/'?'':path) + '/' + item.name)
+                    }
+                }
+                console.log(item.type)
+                if( /image\/*/.test(item.type) ){
+                    item.dblclick = ()=>{
+                        this.createApp('photo-browser', this.photoBrowsers, { icon:'icon-image', title: item.name, url: '/getFile/'+this.params.id+'?url='+item.path+'&type='+item.type })
+                    }
+                }
+                
+                if( item.type === 'application/pdf' ){
+                    item.dblclick = ()=>{
+                        this.createApp('pdf', this.pdfs, { title:item.name, icon:'icon-pdf', src: 'http://127.0.0.1:8088/pdf.html?url=http://127.0.0.1:8088/getFile/'+this.params.id+'?url='+item.path+'§type=text/html' })
+                    }
+                }
+                
+                if( item.type === 'application/ogg' ){
+                    item.dblclick = ()=>{
+                        this.createApp('video-player', this.videoPlayer, { url: 'http://127.0.0.1:8088/getFile/'+this.params.id+'?url='+item.path+'&type=video/ogg' })
+                    }
+                }
+                
+                if( item.type === 'application/zip' ){
+                    item.menu[0].text='解压'
+                    item.dblclick = ()=>{
+                        this.http.get('/unzip/'+this.params.id+'?path='+item.path).subscribe(res => {
+                            config['object'].refresh()
+                        })
+                    }
+                }
+                
+                if( item.type === 'text/plain' || item.type === 'inode/x-empty' ){
+                    item.dblclick = ()=>{
+                        this.cat(item.path, (data)=>{
+                            this.createApp('editor', this.editorList, { 
+                                context: data,//res.json().body, 
+                                title: item.name,
+                                icon: 'icon-textfile',
+                                onSave: (str)=>{
+                                    if( !/\\n$/.test(str))
+                                        str+='\n'
+                                    this.http.post('/write/'+this.params.id+'?path='+item.path, JSON.stringify({body: str}), postOptions).subscribe(res => {
+                                        if( res.status !== 200 )
+                                            alert(res.json().error)
+                                    })
+                                }
+                            })
+                        })
+                    }
+                }
+            })
+            
+            config.fileList = list
         })
-        
     }
     
     iconMap = {
@@ -86,7 +180,8 @@ export class DesktopAppCmp {
         'image/jpeg': 'icon-image',
         'application/ogg': 'icon-video',
         'application/zip': 'icon-zip',
-        'inode/x-empty': 'icon-textfile'
+        'inode/x-empty': 'icon-textfile',
+        'application/pdf': 'icon-pdf'
     }
     
     getFileBrowserConfig(_config = {})
@@ -94,107 +189,7 @@ export class DesktopAppCmp {
         var config = _.extend(_config,
         {
             onSetPath: (path)=>{
-                this.lsByPath(path, (err, list)=>{
-                    list.forEach( (item)=>
-                    {
-                        // console.log(item.type)
-                        item.text = item.name
-                        item.icon = this.iconMap[item.type]
-                        
-                        item.rename = ((name)=>{
-                            
-                            this.mv(item.path, item.path.split('/').splice(0, item.path.split('/').length-1).join('/')+ '/'+name, function(){
-                                config['object'].refresh()
-                            })
-                            
-//                            this.http.post('/rename/ubuntu?path='+item.path+'&name='+name, JSON.stringify({}), postOptions).subscribe(res => {
-//                            })
-                        })
-                        
-                        item.menu = [{
-                            text: "打开",
-                            handler: function(event){
-                                item.dblclick()       
-                            }
-                        }, {
-                            text: "复制",
-                            handler: function(event){
-                                copy_path = item.path
-                                // item.dbclick()       
-                            }
-                        }, {
-                            text: "重命名",
-                            handler: function(event){
-                                item.obj.rename()
-                            }
-                        }, {
-                            text: "删除",
-                            handler: (event)=>{
-                                
-                                if( !confirm("确认删除？") )
-                                    return 
-                                
-                                this.http.post('/delete/ubuntu?path='+item.path, JSON.stringify({}), postOptions).subscribe(res => {
-                                    config['object'].refresh()
-                                })       
-                            }
-                        }]
-                        
-                        if( !item.icon )
-                            item.icon = 'icon-file'
-                        
-                        if( item.type === 'inode/directory' ){
-                            item.dblclick = ()=>{
-                                config['object']['setPath']((path === '/'?'':path) + '/' + item.name)
-                            }
-                        }
-                        
-                        if( /image\/*/.test(item.type) ){
-                            item.dblclick = ()=>{
-                                this.createApp('photo-browser', this.photoBrowsers, { title: item.name, url: '/getFile?url='+item.path+'&type='+item.type })
-                            }
-                        }
-                        
-                        if( item.type === 'application/ogg' ){
-                            item.dblclick = ()=>{
-                                this.createApp('video-player', this.videoPlayer, { url: 'http://127.0.0.1:8088/getFile?url='+item.path+'&type=video/ogg' })
-                            }
-                        }
-                        
-                        if( item.type === 'application/zip' ){
-                            item.menu[0].text='解压'
-                            item.dblclick = ()=>{
-                                this.http.get('/unzip/ubuntu?path='+item.path).subscribe(res => {
-                                    config['object'].refresh()
-                                })
-                            }
-                        }
-                        
-                        if( item.type === 'text/plain' || item.type === 'inode/x-empty' ){
-                            item.dblclick = ()=>{
-                                this.cat(item.path, (data)=>{
-                                                
-                                // this.http.get('/cat/ubuntu?path='+item.path).subscribe(res => {
-                                    this.createApp('editor', this.editorList, { 
-                                        context: data,//res.json().body, 
-                                        title: item.name,
-                                        onSave: (str)=>{
-                                            if( !/\\n$/.test(str))
-                                                str+='\n'
-                                            this.http.post('/write/ubuntu?path='+item.path, JSON.stringify({body: str}), postOptions).subscribe(res => {
-                                                if( res.status !== 200 )
-                                                    alert(res.json().error)
-                                            })
-                                        }
-                                    })
-                                // })
-                                })
-                            }
-                        }
-                    })
-                    
-                    config.fileList = list
-                })
+                this.lsByPath(path, config)
             },
             fileList: []
         })
@@ -260,6 +255,14 @@ export class DesktopAppCmp {
         this.socket.emit('data'+this.term_id, 'cat '+path+' \n')
     }
     
+    rm(path, done){
+        this.callback = (data)=>{
+            this.callback = null
+            done()
+        }
+        this.socket.emit('data'+this.term_id, 'rm -r '+path+' \n')
+    }
+    
     mv(path, newPath, done){
         this.callback = (data)=>{
             this.callback = null
@@ -268,7 +271,7 @@ export class DesktopAppCmp {
             done()
         }
         
-         this.socket.emit('data'+this.term_id, 'mv '+path+' '+ newPath +' \n')
+        this.socket.emit('data'+this.term_id, 'mv '+path+' '+ newPath +' \n')
     }
     
     touch(path, done){
@@ -292,12 +295,13 @@ export class DesktopAppCmp {
         
         this.socket.emit('data'+this.term_id, 'mkdir '+path+' \n')
     }
-    
-    constructor(public http?: Http){
-       
+    params:any = {}
+    constructor(public http?: Http, routerParams?: RouteParams){
+        this.params = routerParams.params
+        
         setTimeout(()=>
         {
-            var term_id = 'ubuntu-cuqsx'+'§'+ 11
+            var term_id = this.params.id +'§'+ 11
             this.socket = io.connect("http://"+window.location.host)
             
             this.socket.emit('createTerminal', term_id, (term_id)=>
@@ -329,7 +333,9 @@ export class DesktopAppCmp {
             dblclick: ()=>{
                 var config = {
                     title: '这台电脑',
-                    path: '/'
+                    path: '/',
+                    icon: 'icon-computer',
+                    uploadUrl:'/upload/'+this.params.id
                 }
                 
                 this.createApp('file-browser', this.fileBrowsers, this.getFileBrowserConfig(config))
@@ -343,6 +349,8 @@ export class DesktopAppCmp {
                 var config = {
                     title: '我的文档',
                     path: '/root',
+                    icon: 'icon-user',
+                    uploadUrl:'/upload/'+this.params.id,
                     menu: [{
                         text: "新建",
                         items: [{
@@ -351,8 +359,6 @@ export class DesktopAppCmp {
                                 this.mkdir(config['object'].path+'/NewFolder', function(){
                                     config['object'].refresh()
                                 })
-                                // this.http.post('/mkdir/ubuntu?path='+, JSON.stringify({}), postOptions).subscribe(res => {
-                                // })
                             }
                         }, {
                             text: '文档',
@@ -360,9 +366,6 @@ export class DesktopAppCmp {
                                 this.touch(config['object'].path+'/NewFile', function(){
                                     config['object'].refresh()
                                 })
-                                // this.http.post('/touch/ubuntu?path='+config['object'].path+'/NewFile', JSON.stringify({}), postOptions).subscribe(res => {
-                                //     config['object'].refresh()
-                                // })
                             }
                         }],
                         handler: function(event){
@@ -380,7 +383,7 @@ export class DesktopAppCmp {
                         {
                             var filename = copy_path.split('/').pop() + '_copy'
                             
-                            this.http.post('/cp/ubuntu?source='+copy_path + '&to=' + config['object'].path + '/' + filename, JSON.stringify({}), postOptions).subscribe(res => {
+                            this.http.post('/cp/'+this.params.id+'?source='+copy_path + '&to=' + config['object'].path + '/' + filename, JSON.stringify({}), postOptions).subscribe(res => {
                                 config['object'].refresh()
                             })
                         }
@@ -393,7 +396,7 @@ export class DesktopAppCmp {
             text: 'Terminal',
             shadow: 'shadow',
             dblclick: ()=>{
-                this.createApp('terminal', this.terminals, { icon_class: 'icon-terminal'})
+                this.createApp('terminal', this.terminals, { icon:'icon-terminal', title:'Terminal', container_id: this.params.id , icon_class: 'icon-terminal'})
             }
         }]
     }

@@ -16,7 +16,7 @@ module.exports = function(server)
             
             term_id = tid++
             
-            var term = pty.spawn('docker', ['-H', '101.251.243.38:8080', 'exec', '-it', 'ubuntu', '/bin/bash'], {cwd: '/'})
+            var term = pty.spawn('docker', ['-H', '101.251.243.38:8080', 'exec', '-it', name, '/bin/bash'], {cwd: '/'})
             
             .on('data', function(data){
                 socket.emit('data'+ term_id, data)
@@ -37,5 +37,6 @@ module.exports = function(server)
             
             func(term_id)
         })
+        
     })
 }
