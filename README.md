@@ -17,7 +17,7 @@
 
 ##运行 
 ```
-docker run -it -p 8088:8088 --env DOCKER_HOST=127.0.0.1:2376 -v /usr/local/bin/docker:/usr/local/bin/docker junjun16818/docker-desktop:1.0
+docker run -p 8088:8088 --env DOCKER_HOST=127.0.0.1:2376 -v /usr/local/bin/docker:/usr/local/bin/docker junjun16818/docker-desktop:1.0
 ```
 
 
