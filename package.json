@@ -87,12 +87,14 @@
     "ejs": "^2.3.4",
     "es6-module-loader": "^0.17.8",
     "es6-shim": "^0.33.3",
-    "express-partials": "^0.3.0",
+    "express": "^4.13.3",
     "k8s": "^0.1.9",
     "pty.js": "^0.3.0",
     "reflect-metadata": "^0.1.2",
     "rxjs": "5.0.0-beta.0",
+    "socket.io": "^1.4.4",
     "systemjs": "^0.19.4",
+    "tar": "^2.2.1",
     "zone.js": "0.5.10"
   }
 }

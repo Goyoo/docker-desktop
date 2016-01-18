@@ -10,8 +10,11 @@ var multipart = require('connect-multiparty')
 var multipartMiddleware = multipart()
 var exec = require('child_process').exec
 var tar =  require('tar')
-var dockerCommand = 'docker -H 101.251.243.38:8080 '
+var config = require('./config.js')
+var dockerCommand = 'docker -H ' + config.endpoint + ' '
 
+
+console.log(dockerCommand)
 module.exports = function(app)
 {	
 	app.use(function(req, res, next){
@@ -48,8 +51,11 @@ module.exports = function(app)
     
     app.get('/container/list', function(req, res)
     {
-        request.get('http://101.251.243.38:8080/containers/json', function(err, data, body)
+        request.get('http://'+config.endpoint+'/containers/json', function(err, data, body)
         {
+            if( err )
+                return res.json(400, { err: err.toString() })
+            
             body = JSON.parse(body)
             var list = []
             
@@ -95,9 +101,8 @@ module.exports = function(app)
 			'Content-Type' : req.query.type
 		})
 		
-		return request.post({ url:'http://101.251.243.38:8080/containers/'+req.params.name+'/copy', json: { "Resource": req.query.url } }).pipe(tar.Parse()).pipe(res)
+		return request.post({ url:'http://'+config.endpoint+'/containers/'+req.params.name+'/copy', json: { "Resource": req.query.url } }).pipe(tar.Parse()).pipe(res)
 	})
-    
     
 	app.get('/unzip/:name', function(req, res)
 	{
@@ -128,6 +133,14 @@ module.exports = function(app)
         })
 	})
     
+	app.post('/delete/:name', function(req, res)
+	{
+        console.log(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path)
+		exec(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path, function(err, data){
+			res.json(200, { body: data})
+		})
+	})
+    
 	// app.get('/cat/:name', function(req, res)
 	// {
     //     console.log(dockerCommand + 'exec ubuntu cat '+ req.query.path)
@@ -146,14 +159,6 @@ module.exports = function(app)
 	// 		res.json(200, { body: data})
 	// 	})
 	// })
-    
-	app.post('/delete/:name', function(req, res)
-	{
-        console.log(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path)
-		exec(dockerCommand + 'exec '+req.params.name+' rm -r ' + req.query.path, function(err, data){
-			res.json(200, { body: data})
-		})
-	})
     
 	// app.post('/touch/:name', function(req, res)
 	// {

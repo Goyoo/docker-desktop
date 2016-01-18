@@ -1,8 +1,8 @@
 var pty = require('pty.js')
     , pty = require('pty.js')
     , sio = require('socket.io')
-	// , Zones = require('../../tools/mongodb.js').getCollection('zones')
-
+    , config = require('../../conf/config.js')
+    
 module.exports = function(server)
 {
     var tid = 0
@@ -12,12 +12,11 @@ module.exports = function(server)
         socket.on('createTerminal', function(term_id, func)
         {
             var name = term_id.split('§')[0]
-            var zone_id = term_id.split('§')[1]
             
             term_id = tid++
             
-            var term = pty.spawn('docker', ['-H', '101.251.243.38:8080', 'exec', '-it', name, '/bin/bash'], {cwd: '/'})
-            
+            var term = pty.spawn('docker', ['-H', config.endpoint, 'exec', '-it', name, '/bin/bash'], {cwd: '/'})
+            // console.log('docker', ['-H', config.endpoint, 'exec', '-it', name, '/bin/bash'])
             .on('data', function(data){
                 socket.emit('data'+ term_id, data)
             })

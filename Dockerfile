@@ -1,9 +1,8 @@
-FROM dhub.yunpro.cn/junjun16818/node:4.2.2
+FROM dhub.yunpro.cn/node:5.4-wheezy
 MAINTAINER junjun16818
 WORKDIR /app
 ADD ./package.json /app/
 RUN npm install --production
-EXPOSE 8088
+EXPOSE 80
 ADD . /app
 CMD node index.js
-
