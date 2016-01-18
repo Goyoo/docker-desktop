@@ -11,7 +11,7 @@ var multipartMiddleware = multipart()
 var exec = require('child_process').exec
 var tar =  require('tar')
 var config = require('./config.js')
-var dockerCommand = 'docker -H ' + config.endpoint + ' '
+var dockerCommand = 'docker ' + config.endpoint + ' '
 
 
 console.log(dockerCommand)
@@ -31,7 +31,7 @@ module.exports = function(app)
     
     app.post('/container/create', function(req, res)
     {
-        var image = 'dhub.yunpro.cn/junjun16818/'+req.body.image
+        var image = req.body.image
         var cmd = dockerCommand + ' run --label zone='+req.body.zone + ' -p 80 --name ' + req.body.name + ' -d -it ' + image + ' tail -f /etc/hosts'
         
         exec(cmd, function(err, stdout){
@@ -65,7 +65,7 @@ module.exports = function(app)
                 
                 
                 item.Ports.forEach(function(rec){
-                    rec.IP = ipMap[rec.IP]
+                    rec.IP = ipMap[rec.IP] || rec.IP
                 })
                 
                 list.push({

@@ -9,15 +9,15 @@ import { DockCmp } from './dock';
         <div id="{{_id}}" class="bottomBar"> 
             <div class="backgroundDiv"> 
                 <start></start> 
-                <div class="task-work"><div></div></div> 
+                <div class="task-work" (click)="work()"><div></div></div> 
                 <dock [docks]="docks"></dock> 
-                <div class="task-clock"> 
-                    <div>4:49</div> 
-                    <div>2015/5/9</div> 
+                <div class="task-clock" (click)="clickTime()"> 
+                    <div id="time">{{time | date:'HH'}}:{{time | date:'mm'}}</div> 
+                    <div id="date">{{time | date:'yyyy'}}-{{time | date:'MM'}}-{{time | date:'dd'}}</div> 
                 </div> 
             </div> 
         </div> 
-    `,
+    `,   
     styleUrls: ['./desktop/taskbar/taskbar.css'],
     directives: [NgStyle, StartCmp, DockCmp]
 })
@@ -25,7 +25,16 @@ import { DockCmp } from './dock';
 export class TaskbarCmp {
     _id = 'taskbar';
     @Input() docks;
+    time = new Date
+    work(){
+        alert('敬请期待')
+    }
+    clickTime(){
+        alert('敬请期待')
+    }
     constructor(){
-        
+        setTimeout(()=> {
+            this.time = new Date
+        }, 1000);
     }
 }

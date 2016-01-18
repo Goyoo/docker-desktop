@@ -132,7 +132,7 @@ export class DesktopAppCmp {
                 
                 if( item.type === 'application/pdf' ){
                     item.dblclick = ()=>{
-                        this.createApp('pdf', this.pdfs, { title:item.name, icon:'icon-pdf', src: 'http://127.0.0.1:8088/pdf.html?url=http://127.0.0.1:8088/getFile/'+this.params.id+'?url='+item.path+'§type=text/html' })
+                        this.createApp('pdf', this.pdfs, { title:item.name, icon:'icon-pdf', src: 'http://'+window.location.host+'/pdf.html?url=http://'+window.location.host+'/getFile/'+this.params.id+'?url='+item.path+'§type=text/html' })
                     }
                 }
                 
