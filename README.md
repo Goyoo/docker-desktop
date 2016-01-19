@@ -36,6 +36,10 @@
 ```
 docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/docker-desktop:0.1
 ```
+
+启动成功后通过浏览器访问，会列出所有带有lable zone 参数的容器
+
+
 项目地址
 
 https://github.com/junjun16818/docker-desktop
