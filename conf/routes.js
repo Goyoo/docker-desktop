@@ -11,10 +11,8 @@ var multipartMiddleware = multipart()
 var exec = require('child_process').exec
 var tar =  require('tar')
 var config = require('./config.js')
-var dockerCommand = 'docker ' + config.endpoint + ' '
+var dockerCommand = 'docker -H ' + config.endpoint + ' '
 
-
-console.log(dockerCommand)
 module.exports = function(app)
 {	
 	app.use(function(req, res, next){
