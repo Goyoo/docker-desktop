@@ -58,9 +58,8 @@ module.exports = function(app)
             var list = []
             
             body.forEach(function(item){
-                if( !item.Labels || !item.Labels.zone )
-                    return 
-                
+                // if( !item.Labels || !item.Labels.zone )
+                //     return 
                 
                 item.Ports.forEach(function(rec){
                     rec.IP = ipMap[rec.IP] || rec.IP
