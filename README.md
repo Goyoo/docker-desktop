@@ -30,8 +30,6 @@
 
 3、后端语言为nodejs，socket与前端建立tty 并与UI组件进行整合
 
-
-
 ##4、如何使用
 
 使用起来非常简单 首先将docker daemon 启动tcp方式，然后运行我已经制作好的镜像，将docker地址通过环境变量传给容器
@@ -41,6 +39,10 @@ docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/do
 项目地址
 
 https://github.com/junjun16818/docker-desktop
+
+在线演示地址
+
+http://101.251.243.38
 
 具体操作方法在实现功能里有描述
 
@@ -88,4 +90,9 @@ https://github.com/junjun16818/docker-desktop
 
 解决的难点是当容器在国外时延迟的问题，解决的方法是当用户在访问页面时通过socket连接一个tty终端，用户在页面上的所有操作都模拟用户在终端输入命令并返回结果，所以就算容器是在国外，操作起来也和国内的容器一样流畅，几乎没有差别。
 
+
+##7、项目截图
+
+
+![github](https://github.com/junjun16818/docker-desktop/blob/master/resource/images/demo/1.jpeg "github")  
 
