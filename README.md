@@ -24,21 +24,13 @@
 
 ##3、实现方式
 
-首先我使用 typescript语言 以及 angualr2框架 编写了一套UI组件 web desktop ，这套组件尽可能的模仿了windows10系统，完成了基本的操作。
+1、首先我使用 typescript语言 以及 angualr2框架 编写了一套UI组件 web desktop ，这套组件尽可能的模仿了windows10系统，完成了基本的操作。
 
-然后使用swarm搭建跨区的集群
+2、然后使用swarm搭建跨区的集群
 
-后端语言为nodejs
+3、后端语言为nodejs，socket与前端建立tty 并与UI组件进行整合
 
-socket与前端建立tty 并与UI组件进行整合
 
-其它细节
-
-上传文件通过执行后端执行子进程docker cp 命令实现
-
-在线预览调用docker的api cp方法从容器内将文件拷贝在流中解压缩并通过管道传给response
-
-其它操作通过socket与前端建立tty
 
 ##4、如何使用
 
