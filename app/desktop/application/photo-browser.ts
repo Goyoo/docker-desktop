@@ -19,10 +19,10 @@ declare var $
 })
 
 export class PhotoBrowserCmp extends WindowCmp {
-    shortcuts = [] 
+    shortcuts = []
     element: any
     @Input() config
-    width = 400
+    width = 650
 	height = 500
 	constructor(@Inject(ElementRef) elementRef: ElementRef){
         

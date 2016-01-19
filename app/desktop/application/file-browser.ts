@@ -103,10 +103,10 @@ export class FileBrowserCmp extends WindowCmp {
             // submit.disabled = false;  
         }, false);  
     }
-    
+     
     uploadFile(file, status) {
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', this.config.uploadUrl);
+        xhr.open('POST', this.config.uploadUrl + '?path='+this.path);
         xhr.onload = ()=> {
             this.refresh()
         };

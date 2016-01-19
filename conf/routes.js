@@ -13,6 +13,7 @@ var tar =  require('tar')
 var config = require('./config.js')
 var dockerCommand = 'docker -H ' + config.endpoint + ' '
 
+console.log(dockerCommand)
 module.exports = function(app)
 {	
 	app.use(function(req, res, next){
@@ -58,8 +59,8 @@ module.exports = function(app)
             var list = []
             
             body.forEach(function(item){
-                // if( !item.Labels || !item.Labels.zone )
-                //     return 
+                if( !item.Labels || !item.Labels.zone )
+                    return 
                 
                 item.Ports.forEach(function(rec){
                     rec.IP = ipMap[rec.IP] || rec.IP
@@ -82,8 +83,9 @@ module.exports = function(app)
 	{
 		for( var key in req.files )
 		{
-			var cmd = dockerCommand + 'cp ' + req.files[key].path + ' '+req.params.name +':/root/'+req.files[key].name
-			exec(cmd, function(err, stdout){
+			var cmd = dockerCommand + 'cp ' + req.files[key].path + ' '+req.params.name +':'+ req.query.path +'/' +req.files[key].name
+			console.log(cmd)
+            exec(cmd, function(err, stdout){
 				if( err )
 					return res.json(400, {error: err.toString()})
 				else
@@ -112,7 +114,6 @@ module.exports = function(app)
 			res.json(200, { body: data})
 		})
 	})
-    
     
 	app.post('/write/:name', function(req, res)
 	{

@@ -8,7 +8,7 @@ declare var $
     selector: 'shortcut',
     template: `
         <div id="" class="desktop-icon" style="height:80px">
-            <div *ngIf="shortcut" class="icon-block" (click)="click()" (dblclick)="shortcut&&shortcut.dblclick && shortcut.dblclick()" (contextmenu)="rightClick($event)" (click)="hideMenu()">
+            <div *ngIf="shortcut" class="icon-block" title="{{shortcut.text}}" (click)="click()" (dblclick)="shortcut&&shortcut.dblclick && shortcut.dblclick()" (contextmenu)="rightClick($event)" (click)="hideMenu()">
                 <div class="icon-bg {{shortcut && shortcut.icon}}" ></div>
                 <div *ngIf="!_rename" class="icon-text{{shortcut && shortcut.shadow?'-shadow':''}}">{{shortcut.text}}</div>
                 <div *ngIf="_rename" class="icon-text{{shortcut && shortcut.shadow?'-shadow':''}}">

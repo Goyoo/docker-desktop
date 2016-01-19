@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label for="inputPassword3" class="col-sm-2 control-label">Image</label>
                 <div class="col-sm-10">
-                <input type="text" class="form-control" placeholder="Image" id="image">
+                <input type="text" class="form-control" value="junjun16818/node:5.4.0-wheezy" placeholder="Image" id="image">
                 </div>
             </div>
         </form>
@@ -43,7 +43,7 @@
   
   <div class="col-md-3" *ngFor="#item of list">
     <div class="panel panel-default">
-        <div class="panel-heading">{{item.name}} <div style="float:right" *ngIf="item.port.IP">{{item.port.IP}}:80->{{item.port.PublicPort}}</div></div>
+        <div class="panel-heading" style="font-size:11px">{{item.name}} <div style="float:right" *ngIf="item.port.IP">{{item.port.IP}}:80->{{item.port.PublicPort}}</div></div>
         <div class="panel-body">
             <a href="/#/desktop/{{item.id}}/{{item.port.IP}}/{{item.port.PublicPort}}"><img style="width:100%" src="/resource/images/swarm.png" alt=""></a>
         </div>

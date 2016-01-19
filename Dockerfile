@@ -1,4 +1,4 @@
-FROM dhub.yunpro.cn/node:5.4-wheezy
+FROM node:5.4-wheezy
 MAINTAINER junjun16818
 WORKDIR /app
 ADD ./package.json /app/

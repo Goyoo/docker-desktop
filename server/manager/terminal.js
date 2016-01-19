@@ -14,7 +14,7 @@ module.exports = function(server)
             var name = term_id.split('§')[0]
             
             term_id = tid++
-            
+            console.log('docker', ['-H', config.endpoint, 'exec', '-it', name, '/bin/bash'].join(' '))
             var term = pty.spawn('docker', ['-H', config.endpoint, 'exec', '-it', name, '/bin/bash'], {cwd: '/'})
             // console.log('docker', ['-H', config.endpoint, 'exec', '-it', name, '/bin/bash'])
             .on('data', function(data){

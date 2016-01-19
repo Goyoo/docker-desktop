@@ -4,8 +4,8 @@ init:
 	sh /tmp/s.sh
 
 build:
-	docker build -t dhub.yunpro.cn/junjun16818/docker-desktop:1.0 .
+	docker build -t junjun16818/docker-desktop:0.3 .
 
 push:
-	docker push dhub.yunpro.cn/junjun16818/docker-desktop:1.0
+	docker push junjun16818/docker-desktop:0.3
 

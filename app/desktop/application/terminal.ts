@@ -48,7 +48,6 @@ export class TerminalCmp extends WindowCmp {
 			term.open($(this.element).find('.terminal-window')[0])
 			
 			socket.on('data'+term_id, function(data){ 
-                console.log(1111,data.toString().replace(/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]/g, ''))
 				term.write(data)
 			})
 			

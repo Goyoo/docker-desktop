@@ -266,6 +266,16 @@ export class DesktopAppCmp {
         this.socket.emit('data'+this.term_id, 'rm -r '+path+' \n')
     }
     
+    cp(source, to, done){
+        this.callback = (data)=>{
+            this.callback = null
+            done()
+        }
+        this.socket.emit('data'+this.term_id, 'cp -r '+source+' '+ to +' \n')
+    
+                           
+     }
+    
     mv(path, newPath, done){
         this.callback = (data)=>{
             this.callback = null
@@ -386,9 +396,10 @@ export class DesktopAppCmp {
                         {
                             var filename = copy_path.split('/').pop() + '_copy'
                             
-                            this.http.post('/cp/'+this.params.id+'?source='+copy_path + '&to=' + config['object'].path + '/' + filename, JSON.stringify({}), postOptions).subscribe(res => {
-                                config['object'].refresh()
+                             this.cp(copy_path, config['object'].path + '/' + filename, ()=>{
+                                 config['object'].refresh()
                             })
+                            
                         }
                     }]
                 }

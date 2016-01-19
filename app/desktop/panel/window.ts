@@ -34,6 +34,7 @@ export class WindowCmp{
     element: any;
 	width = 900
 	height = 300
+    dialog
     constructor(){
         setTimeout(()=>{
             this.focus(1)
@@ -41,7 +42,7 @@ export class WindowCmp{
     }
     setDialog()
     {
-        dialog({
+        this.dialog = dialog({
             top: 50+ (Math.random()*100),
             left: 100 + (Math.random()*100),
             taskBarHeight: 42,
@@ -88,6 +89,6 @@ export class WindowCmp{
         $(this.element).find('.panel').hide()
     }
     max(){
-        
+        this.dialog.max()   
     }
 }
