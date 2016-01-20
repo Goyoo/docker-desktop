@@ -30,7 +30,7 @@
 
 使用起来非常简单 首先将docker daemon 启动tcp方式，然后运行我已经制作好的镜像，将docker地址通过环境变量传给容器
 ```
-docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/docker-desktop:0.3
+docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/docker-desktop
 ```
 
 启动成功后通过浏览器访问，会列出所有带有lable zone 参数的容器
