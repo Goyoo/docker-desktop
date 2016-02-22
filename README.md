@@ -52,7 +52,7 @@ docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/do
 
      名称（name）： 容器的名称，会通过 docker run参数 - - name 传入
      标签（label）：我创建的swarm集群可识别 japan 和 china标签，将容器启动到中国节点或者日本节点，通过docker run参数 - -label 传入
-     镜像（image）：会根据这个镜像启动容器，默认会使用 junjun16818/node:5.4.0-wheezy (这个镜像被服务器缓存过，可以快速创建)
+     镜像（image）：可以是任意镜像地址
      
 创建成功后会列出所有容器。点击容器可以进入
 
