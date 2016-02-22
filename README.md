@@ -25,7 +25,7 @@
 
 只要有浏览器用户就可以拥有一台高配置的桌面操作系统，并在里面工作。
 
-就算用户对linux不熟悉也可以很容易的使用
+使用windows风格就算用户对linux不熟悉也可以很容易的使用
 
 ##3、实现方式
 
@@ -33,9 +33,9 @@
 
 2、然后使用swarm搭建跨区的集群
 
-3、后端语言为nodejs，socket与前端建立一个web终端，我实现对的方式是将这个终端隐藏起来让用户看不见，将用户在界面上的操作转换成命令交给终端去执行，再将命令返回的结果转换成html以图形展示出来 
+3、后端语言为nodejs，socket与前端建立一个web终端
 
-
+4、我将这个终端隐藏起来让用户看不见，将用户在界面上的操作转换成命令交给终端去执行，再将命令返回的结果转换成html以图形展示出来 
 
 
 ##4、实现功能
@@ -43,7 +43,7 @@
 在首页中有创建机器的按钮，点击会弹出表单
 
      名称（name）： 容器的名称，会通过 docker run参数 - - name 传入
-     标签（label）：我创建的swarm集群可识别 japan 和 china标签，将容器启动到中国节点或者日本节点，通过docker run参数 - -label 传入
+     标签（label）：这里的值将会通过docker run参数 - -label zone=<%=value%> 传入
      镜像（image）：可以是任意镜像地址
      
 创建成功后会列出所有容器。点击容器可以进入
@@ -88,9 +88,7 @@ docker run -d -p 8088:8088 --env DOCKER_HOST=192.168.100.100:8080 junjun16818/do
 
 启动成功后通过浏览器访问，会列出所有带有lable zone 参数的容器
 
-
 ##7、项目截图
-
 
 ![github](https://github.com/junjun16818/docker-desktop/blob/master/resource/demo/1.jpeg "github")  
 ![github](https://github.com/junjun16818/docker-desktop/blob/master/resource/demo/2.jpeg "github")  
